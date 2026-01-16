@@ -123,22 +123,18 @@ plot_bcall_analysis(resultado_corregido, show_names = FALSE)</code></pre>
     <h3>Comparación Visual</h3>
     <div class="plots">
         <div class="plot">
-            <h3>Clustering Original</h3>
+            <h3>Con Clustering Original</h3>
             <img src="results/plot_clustering_original.png" alt="Clustering Original">
-            <p>Con clustering original: 23 diputados clasificados como "derecha" aparecen votando como izquierda (d1 &lt; 0)</p>
+            <p>23 diputados clasificados como "derecha" aparecen votando como izquierda (d1 &lt; 0). Coherencia: ~85%</p>
         </div>
         <div class="plot">
-            <h3>Clustering Corregido</h3>
-            <img src="results/plot_clustering_corregido.png" alt="Clustering Corregido">
-            <p>Con clustering corregido: los diputados están clasificados según su comportamiento de votación real</p>
+            <h3>Con Clustering Corregido</h3>
+            <img src="results/plot_manual.png" alt="Clustering Corregido">
+            <p>Diputados clasificados según su comportamiento de votación real. Coherencia: ~98%</p>
         </div>
     </div>
 
-    <h3>Resultado con clustering corregido</h3>
-
-    <img src="results/plot_manual.png" alt="B-Call Manual con clustering corregido" style="max-width: 100%; margin: 20px 0;">
-
-    <p>El análisis B-Call manual refleja la clasificación que proporcionas. Con clustering original: coherencia ~85%. Con clustering corregido: coherencia ~98%.</p>
+    <p>El análisis B-Call manual depende de la clasificación que proporcionas.</p>
 
     <p><strong>Recomendación:</strong> Usa <code>bcall_auto()</code> cuando no tengas clasificación previa. Usa <code>bcall()</code> cuando tengas clasificación verificada.</p>
 
