@@ -90,9 +90,9 @@ plot_bcall_analysis(
 
     <img src="results/plot_auto.png" alt="B-Call Automático" style="max-width: 100%; margin: 20px 0;">
 
-    <h2>Ejemplo 2: Análisis Manual (bcall) - Importancia del Etiquetado Previo</h2>
+    <h2>Ejemplo 2: Análisis Manual (bcall)</h2>
 
-    <p>Cuando usamos clustering manual, el análisis depende de la calidad del etiquetado previo que proporcionamos.</p>
+    <p>Cuando usamos clustering manual, el análisis depende de la clasificación que proporcionamos.</p>
 
     <h3>Con clustering original</h3>
     <pre><code>clustering_original <- read.csv("data/CHL-clustering-2025.csv", row.names = 1)
@@ -134,15 +134,13 @@ plot_bcall_analysis(resultado_corregido, show_names = FALSE)</code></pre>
         </div>
     </div>
 
-    <h3>Importancia del Etiquetado Previo</h3>
-    <p>Este ejemplo muestra que el análisis B-Call manual refleja el etiquetado que proporcionas:</p>
-    <ul>
-        <li>Con etiquetado original: coherencia ~85%</li>
-        <li>Con etiquetado corregido: coherencia ~98%</li>
-        <li>23 diputados fueron reclasificados</li>
-    </ul>
+    <h3>Resultado con clustering corregido</h3>
 
-    <p><strong>Recomendación:</strong> Usa <code>bcall_auto()</code> cuando no tengas clasificación previa confiable. Usa <code>bcall()</code> cuando tengas clasificación verificada.</p>
+    <img src="results/plot_manual.png" alt="B-Call Manual con clustering corregido" style="max-width: 100%; margin: 20px 0;">
+
+    <p>El análisis B-Call manual refleja la clasificación que proporcionas. Con clustering original: coherencia ~85%. Con clustering corregido: coherencia ~98%.</p>
+
+    <p><strong>Recomendación:</strong> Usa <code>bcall_auto()</code> cuando no tengas clasificación previa. Usa <code>bcall()</code> cuando tengas clasificación verificada.</p>
 
     <h2>Comparación Completa</h2>
     <p>Para ejecutar análisis comparativo completo:</p>
