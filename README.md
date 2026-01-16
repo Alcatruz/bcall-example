@@ -4,6 +4,8 @@ Análisis de votaciones de la Cámara de Diputados de Chile usando el paquete [b
 
 Este repositorio contiene datos reales y ejemplos prácticos para demostrar el uso del paquete `bcall` en el análisis de comportamiento legislativo.
 
+**📖 [Ver tutorial completo con ejemplos y gráficos →](https://alcatruz.github.io/bcall-example/)**
+
 ## Datos Disponibles
 
 Este repositorio incluye datos de votaciones de la Cámara de Diputados de Chile del año 2025:
@@ -14,12 +16,12 @@ Este repositorio incluye datos de votaciones de la Cámara de Diputados de Chile
   - Formato listo para usar con `bcall`
 
 - **[CHL-clustering-2025.csv](data/CHL-clustering-2025.csv)** (5 KB)
-  - Clasificación manual izquierda/derecha (ejemplo ilustrativo con algunos errores intencionales)
-  - Para demostrar importancia del etiquetado previo
+  - Clasificación manual izquierda/derecha (con algunos errores)
+  - Muestra cómo el análisis depende de la clasificación manual
 
 - **[CHL-clustering-2025-CORREGIDO.csv](data/CHL-clustering-2025-CORREGIDO.csv)** (5 KB)
   - Clasificación corregida basada en comportamiento de votación
-  - Para análisis con clustering confiable
+  - Para análisis con clasificación verificada
 
 ## Inicio Rápido
 
@@ -181,39 +183,21 @@ plot_bcall_analysis(
 
 *Figura 2: Análisis B-Call con clustering manual (izquierda/derecha). Los colores muestran la clasificación política predefinida de cada diputado.*
 
-## Ejemplo Pedagógico: Importancia del Etiquetado Previo
+## Importancia de la Clasificación Manual
 
-Este repositorio incluye un **ejemplo ilustrativo** que demuestra cómo el análisis B-Call manual **depende de la calidad del etiquetado previo** proporcionado por el investigador.
+El análisis B-Call manual depende de la clasificación que proporcionas. Este repositorio incluye dos versiones:
 
-### 📊 Visualización Comparativa Interactiva
+1. **[CHL-clustering-2025.csv](data/CHL-clustering-2025.csv)** - Clasificación con algunos errores
+2. **[CHL-clustering-2025-CORREGIDO.csv](data/CHL-clustering-2025-CORREGIDO.csv)** - Clasificación corregida
 
-**[Ver tutorial completo con gráficos comparativos →](https://alcatruz.github.io/bcall-example/)**
-
-El tutorial muestra lado a lado:
-- Análisis con clustering original (con etiquetado incorrecto intencional)
-- Análisis con clustering corregido (basado en comportamiento real)
-- Código R completo para reproducir ambos análisis
-
-### Dos Versiones del Clustering
-
-1. **[CHL-clustering-2025.csv](data/CHL-clustering-2025.csv)** - Con errores intencionales (ilustrativo)
-2. **[CHL-clustering-2025-CORREGIDO.csv](data/CHL-clustering-2025-CORREGIDO.csv)** - Basado en comportamiento real
-
-### Ejecutar Comparación
+### Comparación
 
 ```r
-# Ejecutar análisis comparativo completo
+# Ejecutar análisis comparativo
 source("comparacion_etiquetado.R")
 ```
 
-Esto ilustra cómo un etiquetado incorrecto puede hacer que el análisis muestre:
-- 23 diputados aparentemente votando contra su clasificación
-- Coherencia de solo 85% vs 98% con etiquetado correcto
-- "Tránsfugas fantasma" que en realidad son errores de clasificación previa
-
-### Conclusión del Ejemplo
-
-El análisis B-Call manual refleja el etiquetado que proporciona el investigador. Si el etiquetado es incorrecto, el análisis mostrará inconsistencias aparentes.
+Con clasificación incorrecta: coherencia ~85%. Con clasificación correcta: coherencia ~98%.
 
 ---
 
