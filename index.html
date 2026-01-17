@@ -53,19 +53,27 @@
 
     <p>Análisis de votaciones usando el paquete <a href="https://github.com/bcallr/bcall">bcall</a>.</p>
 
-    <h2>Instalación y Datos</h2>
+    <h2>Instalación</h2>
     <pre><code># Instalar bcall
 install.packages("devtools")
 devtools::install_github("bcallr/bcall")
-library(bcall)
+library(bcall)</code></pre>
 
-# Clonar repositorio con datos
-# Opción 1: Desde terminal/consola
-# git clone https://github.com/Alcatruz/bcall-example.git
-# setwd("bcall-example")
+    <h2>Datos Necesarios</h2>
+    <p>Clona el repositorio para obtener todos los archivos:</p>
+    <pre><code>git clone https://github.com/Alcatruz/bcall-example.git
+cd bcall-example</code></pre>
 
-# Cargar datos
-rollcall <- read.csv("data/CHL-rollcall-2025.csv", row.names = 1)
+    <p>O descarga manualmente estos archivos en una carpeta <code>data/</code>:</p>
+    <ul>
+        <li><a href="data/CHL-rollcall-2025.csv">CHL-rollcall-2025.csv</a> - Matriz de votaciones</li>
+        <li><a href="data/CHL-clustering-2025.csv">CHL-clustering-2025.csv</a> - Clustering manual (con errores)</li>
+        <li><a href="data/CHL-clustering-2025-CORREGIDO.csv">CHL-clustering-2025-CORREGIDO.csv</a> - Clustering corregido</li>
+        <li><a href="data/df_wnominate.xlsx">df_wnominate.xlsx</a> - Datos W-NOMINATE para comparación</li>
+    </ul>
+
+    <p>Luego carga los datos en R:</p>
+    <pre><code>rollcall <- read.csv("data/CHL-rollcall-2025.csv", row.names = 1)
 clustering_original <- read.csv("data/CHL-clustering-2025.csv", row.names = 1)
 clustering_corregido <- read.csv("data/CHL-clustering-2025-CORREGIDO.csv", row.names = 1)</code></pre>
 
@@ -121,18 +129,9 @@ resultado_corregido <- bcall(
 plot_bcall_analysis(resultado_corregido, show_names = FALSE)</code></pre>
 
     <h3>Comparación Visual</h3>
-    <div class="plots">
-        <div class="plot">
-            <h3>Con Clustering Original</h3>
-            <img src="results/plot_clustering_original.png" alt="Clustering Original">
-            <p>23 diputados clasificados como "derecha" aparecen votando como izquierda (d1 &lt; 0). Coherencia: ~85%</p>
-        </div>
-        <div class="plot">
-            <h3>Con Clustering Corregido</h3>
-            <img src="results/plot_manual.png" alt="Clustering Corregido">
-            <p>Diputados clasificados según su comportamiento de votación real. Coherencia: ~98%</p>
-        </div>
-    </div>
+    <img src="results/comparacion_etiquetado.png" alt="Comparación Clustering Original vs Corregido" style="max-width: 100%; margin: 20px 0;">
+
+    <p>Izquierda: clustering original con errores (coherencia ~85%). Derecha: clustering corregido (coherencia ~98%).</p>
 
     <p>El análisis B-Call manual depende de la clasificación que proporcionas.</p>
 
