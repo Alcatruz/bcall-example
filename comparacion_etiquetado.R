@@ -65,6 +65,8 @@ resultado_corregido <- bcall(
   verbose = TRUE
 )
 
+
+
 # ----------------------------------------------------------------------------
 # COMPARACIÓN DE RESULTADOS
 # ----------------------------------------------------------------------------
@@ -83,6 +85,7 @@ comparacion <- resultado_original$results %>%
   mutate(
     cambio = ifelse(cluster_original != cluster_corregido, "SI", "NO")
   )
+
 
 # Diputados reclasificados
 reclasificados <- comparacion %>%

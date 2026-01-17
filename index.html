@@ -53,21 +53,21 @@
 
     <p>Análisis de votaciones usando el paquete <a href="https://github.com/bcallr/bcall">bcall</a>.</p>
 
-    <h2>Instalación</h2>
-    <pre><code>install.packages("devtools")
+    <h2>Instalación y Datos</h2>
+    <pre><code># Instalar bcall
+install.packages("devtools")
 devtools::install_github("bcallr/bcall")
-library(bcall)</code></pre>
+library(bcall)
 
-    <h2>Descargar Datos</h2>
-    <p>Para reproducir estos análisis, descarga los archivos CSV:</p>
-    <ul>
-        <li><a href="data/CHL-rollcall-2025.csv">CHL-rollcall-2025.csv</a> - Matriz de votaciones</li>
-        <li><a href="data/CHL-clustering-2025.csv">CHL-clustering-2025.csv</a> - Clustering manual izquierda/derecha</li>
-        <li><a href="data/CHL-clustering-2025-CORREGIDO.csv">CHL-clustering-2025-CORREGIDO.csv</a> - Clustering corregido</li>
-    </ul>
+# Clonar repositorio con datos
+# Opción 1: Desde terminal/consola
+# git clone https://github.com/Alcatruz/bcall-example.git
+# setwd("bcall-example")
 
-    <p>O clona el repositorio:</p>
-    <pre><code>git clone https://github.com/Alcatruz/bcall-example.git</code></pre>
+# Cargar datos
+rollcall <- read.csv("data/CHL-rollcall-2025.csv", row.names = 1)
+clustering_original <- read.csv("data/CHL-clustering-2025.csv", row.names = 1)
+clustering_corregido <- read.csv("data/CHL-clustering-2025-CORREGIDO.csv", row.names = 1)</code></pre>
 
     <h2>Ejemplo 1: Análisis Automático (bcall_auto)</h2>
     <p>El análisis automático detecta grupos ideológicos sin necesidad de clasificación previa:</p>
@@ -138,18 +138,85 @@ plot_bcall_analysis(resultado_corregido, show_names = FALSE)</code></pre>
 
     <p><strong>Recomendación:</strong> Usa <code>bcall_auto()</code> cuando no tengas clasificación previa. Usa <code>bcall()</code> cuando tengas clasificación verificada.</p>
 
-    <h2>Comparación Completa</h2>
-    <p>Para ejecutar análisis comparativo completo:</p>
-    <pre><code>source("comparacion_etiquetado.R")</code></pre>
+    <h2>Comparación con W-NOMINATE</h2>
 
-    <p>Esto genera:</p>
-    <ul>
-        <li>results/plot_clustering_original.png</li>
-        <li>results/plot_clustering_corregido.png</li>
-        <li>results/comparacion_etiquetado.png</li>
-        <li>results/diputados_reclasificados.csv</li>
-        <li>results/comparacion_clusters.csv</li>
-    </ul>
+    <p>Primera dimensión: ambos modelos correlacionan (r=0.995). Segunda dimensión: B-Call captura cohesión, W-NOMINATE no.</p>
+
+    <pre><code># Cargar datos W-NOMINATE
+library(readxl)
+library(dplyr)
+library(ggplot2)
+
+wnominate <- read_excel("data/df_wnominate.xlsx")
+
+# Ejecutar B-Call
+resultado_bcall <- bcall(
+  rollcall = rollcall,
+  clustering = clustering_corregido,
+  pivot = "Alessandri_Vergara_Jorge",
+  threshold = 0.1
+)
+
+# Matchear legisladores
+comparacion <- resultado_bcall$results %>%
+  left_join(wnominate %>% select(legislator, coord1D, coord2D), by = "legislator")
+
+# Correlación primera dimensión
+cor(comparacion$d1, comparacion$coord1D)  # r = 0.995
+
+# Gráfico correlación d1
+ggplot(comparacion, aes(x = coord1D, y = d1, color = cluster)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") +
+  scale_color_manual(values = c("izquierda" = "#E74C3C", "derecha" = "#3498DB")) +
+  labs(title = "Primera Dimensión: B-Call vs W-NOMINATE",
+       x = "W-NOMINATE coord1D", y = "B-Call d1") +
+  theme_minimal()
+
+# Detectar zonas de volatilidad
+# ZONA ROJA: d2 alto + coord2D centrado
+outliers_roja <- comparacion %>%
+  filter(d2 > 0.9, abs(coord2D) < 0.2) %>%
+  mutate(zona = "Roja")
+
+# ZONA AMARILLA: d1 centrado + d2 alto
+outliers_amarilla <- comparacion %>%
+  filter(abs(d1) < 0.3, d2 > 0.9) %>%
+  mutate(zona = "Amarilla")
+
+outliers <- bind_rows(outliers_roja, outliers_amarilla)
+
+# Gráfico zonas
+ggplot(comparacion, aes(x = d1, y = d2, color = cluster)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0.9, ymax = Inf),
+            fill = "red", alpha = 0.05, inherit.aes = FALSE) +
+  geom_rect(aes(xmin = -0.3, xmax = 0.3, ymin = 0.9, ymax = Inf),
+            fill = "yellow", alpha = 0.1, inherit.aes = FALSE) +
+  geom_text(data = outliers, aes(label = legislator), size = 2.5, vjust = -0.5) +
+  scale_color_manual(values = c("izquierda" = "#E74C3C", "derecha" = "#3498DB")) +
+  labs(title = "B-Call detecta volatilidad legislativa que W-NOMINATE no ve",
+       x = "d1 (ideología)", y = "d2 (cohesión: alto = volátil)") +
+  theme_minimal()</code></pre>
+
+    <div class="plots">
+        <div class="plot">
+            <h3>Primera Dimensión</h3>
+            <img src="results/correlacion_d1.png" alt="Correlación d1 vs coord1D">
+            <p>Correlación r=0.995. Ambos modelos capturan ideología.</p>
+        </div>
+        <div class="plot">
+            <h3>Segunda Dimensión</h3>
+            <img src="results/scatter_d1_d2_dos_zonas.png" alt="Zonas de volatilidad">
+            <p>B-Call detecta dos zonas de volatilidad que W-NOMINATE no captura.</p>
+        </div>
+    </div>
+
+    <h3>Zona Roja</h3>
+    <p>d2 > 0.9 y |coord2D| < 0.2. Legisladores volátiles que W-NOMINATE ve centrados.</p>
+
+    <h3>Zona Amarilla</h3>
+    <p>|d1| < 0.3 y d2 > 0.9. Legisladores centrados ideológicamente pero sin cohesión en votación.</p>
 
     <h2>Más Información</h2>
     <ul>
