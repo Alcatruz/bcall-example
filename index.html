@@ -16,14 +16,39 @@
         h1, h2, h3 {
             margin-top: 30px;
         }
+        .code-block {
+            position: relative;
+            margin: 20px 0;
+        }
         pre {
             background: #f4f4f4;
             padding: 15px;
+            padding-top: 40px;
             border-left: 3px solid #333;
             overflow-x: auto;
+            margin: 0;
         }
         code {
             font-family: 'Courier New', monospace;
+        }
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 5px 10px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+        .copy-button:hover {
+            background: #555;
+        }
+        .copy-button.copied {
+            background: #28a745;
         }
         .plots {
             display: grid;
@@ -53,6 +78,15 @@
 
     <p>Análisis de votaciones usando el paquete <a href="https://github.com/bcallr/bcall">bcall</a>.</p>
 
+    <h2>¿Qué es B-Call?</h2>
+    <p>B-Call (Bidimensional Analysis of Roll Call) es una metodología para analizar comportamiento legislativo que integra dos dimensiones:</p>
+    <ul>
+        <li><strong>d1 (Posición ideológica):</strong> Ubica a cada legislador en el espectro izquierda-derecha según el promedio de sus votos.</li>
+        <li><strong>d2 (Cohesión):</strong> Mide qué tan consistente es el comportamiento de voto. Un d2 bajo indica votación predecible; un d2 alto indica volatilidad.</li>
+    </ul>
+
+    <p><strong>¿Por qué B-Call?</strong> Modelos tradicionales como W-NOMINATE funcionan bien en sistemas estables con partidos disciplinados. Pero en contextos fragmentados (como Chile o Brasil), legisladores con baja cohesión aparecen artificialmente como "moderados" cuando en realidad son volátiles. B-Call corrige esto al medir explícitamente esa volatilidad como una segunda dimensión.</p>
+
     <h2>Instalación</h2>
     <pre><code># Instalar bcall
 install.packages("devtools")
@@ -80,11 +114,16 @@ clustering_corregido <- read.csv("data/CHL-clustering-2025-CORREGIDO.csv", row.n
     <h2>Ejemplo 1: Análisis Automático (bcall_auto)</h2>
     <p>El análisis automático detecta grupos ideológicos sin necesidad de clasificación previa:</p>
 
+    <h3>¿Qué es el pivot?</h3>
+    <p>El <strong>pivot</strong> es un legislador de referencia que define la orientación del eje d1 (izquierda-derecha). Si conoces el contexto político, puedes especificar un legislador de derecha como pivot. Si no lo especificas, B-Call lo elige automáticamente. <strong>El pivot solo afecta la dirección</strong> (valores positivos vs negativos en d1), no altera el análisis.</p>
+
     <pre><code>rollcall <- read.csv("data/CHL-rollcall-2025.csv", row.names = 1)
 
 resultado_auto <- bcall_auto(
   rollcall = rollcall,
   distance_method = 1,
+  pivot = "Alessandri_Vergara_Jorge", # Opcional: si conoces el contexto, especifica un legislador de derecha
+                                       # Si no lo incluyes, se elige automáticamente (solo cambia la dirección del eje)
   threshold = 0.1,
   verbose = TRUE
 )
@@ -223,6 +262,45 @@ ggplot(comparacion, aes(x = d1, y = d2, color = cluster)) +
         <li><a href="https://github.com/Alcatruz/bcall-example">Repositorio de ejemplo</a></li>
         <li><a href="https://doi.org/10.3389/fpos.2025.1670089">Paper: Toro-Maureira et al. (2025)</a></li>
     </ul>
+
+    <script>
+        // Envolver todos los bloques pre/code con div.code-block y agregar botón de copiar
+        document.addEventListener('DOMContentLoaded', function() {
+            const preBlocks = document.querySelectorAll('pre');
+
+            preBlocks.forEach(function(pre) {
+                // Crear contenedor
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block';
+
+                // Crear botón de copiar
+                const button = document.createElement('button');
+                button.className = 'copy-button';
+                button.textContent = 'Copiar';
+                button.onclick = function() {
+                    const code = pre.querySelector('code');
+                    const text = code ? code.textContent : pre.textContent;
+
+                    navigator.clipboard.writeText(text).then(function() {
+                        button.textContent = '✓ Copiado';
+                        button.classList.add('copied');
+
+                        setTimeout(function() {
+                            button.textContent = 'Copiar';
+                            button.classList.remove('copied');
+                        }, 2000);
+                    });
+                };
+
+                // Insertar wrapper antes del pre
+                pre.parentNode.insertBefore(wrapper, pre);
+                // Mover pre dentro del wrapper
+                wrapper.appendChild(pre);
+                // Agregar botón
+                wrapper.appendChild(button);
+            });
+        });
+    </script>
 
 </body>
 </html>
