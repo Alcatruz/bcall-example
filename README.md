@@ -2,16 +2,18 @@
 
 Análisis de votaciones de la Cámara de Diputados de Chile usando el paquete [bcall](https://github.com/bcallr/bcall).
 
-Este repositorio contiene datos reales y ejemplos prácticos para demostrar el uso del paquete `bcall` en el análisis de comportamiento legislativo.
+Este repositorio contiene ejemplos prácticos para demostrar el uso del paquete `bcall` en el análisis de comportamiento legislativo.
 
 **📖 [Ver tutorial completo con ejemplos y gráficos →](https://alcatruz.github.io/bcall-example/)**
 
-## Datos Disponibles
+## Datos
 
-- **[CHL-rollcall-2025.csv](data/CHL-rollcall-2025.csv)** - Matriz de votaciones
-- **[CHL-clustering-2025.csv](data/CHL-clustering-2025.csv)** - Clustering manual (con errores para demostrar dependencia)
-- **[CHL-clustering-2025-CORREGIDO.csv](data/CHL-clustering-2025-CORREGIDO.csv)** - Clustering corregido
-- **[df_wnominate.xlsx](data/df_wnominate.xlsx)** - Datos W-NOMINATE para comparación
+Los datos del ejemplo no están en el repositorio. Los scripts los leen desde una carpeta `data/` con estos archivos:
+
+- `CHL-rollcall-2025.csv` - Matriz de votaciones
+- `CHL-clustering-2025.csv` - Clustering manual (con errores para demostrar dependencia)
+- `CHL-clustering-2025-CORREGIDO.csv` - Clustering corregido
+- `df_wnominate.xlsx` - Datos W-NOMINATE para comparación
 
 ## Clonar Repositorio
 
